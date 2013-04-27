@@ -6,7 +6,8 @@ class apache-server {
 
   service { 'httpd':
     require => Package['httpd'],
-    ensure => running
+    ensure => running,            # this makes sure httpd is running now
+    enable => true                # this make sure httpd starts on each boot
   }
 
 }
