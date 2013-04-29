@@ -9,13 +9,20 @@ Vagrant.configure("2") do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "centos-6.4-base"
 
+  config.vm.synced_folder "./puppet", "/etc/puppet/files"
+
   config.vm.provision :shell,
     :inline => 'rpm -Uvh http://yum.puppetlabs.com/el/6/products/i386/puppetlabs-release-6-7.noarch.rpm ; echo done'
 
   config.vm.provision :shell,
     :inline => 'yum -y install puppet'
 
-  config.vm.provision :puppet do |puppet|
+  config.vm.provision :shell,
+    :inline => 'puppet module install puppetlabs/vcsrepo ; echo done'
+
+  config.vm.provision :puppet,
+    :options => ["--fileserverconfig=/vagrant/puppet/fileserver.conf"] do
+      |puppet|
     puppet.module_path    = "puppet/modules"
     puppet.manifests_path = "puppet"
     puppet.manifest_file  = "site.pp"
@@ -32,7 +39,7 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network :private_network, ip: "192.168.33.10"
+  config.vm.network :private_network, ip: "192.168.33.20"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on

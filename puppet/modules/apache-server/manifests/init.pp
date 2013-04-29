@@ -10,4 +10,14 @@ class apache-server {
     enable => true                # this make sure httpd starts on each boot
   }
 
+  service { 'iptables':
+    ensure => stopped,
+    enable => false
+  }
+
+  service { 'ip6tables':
+    ensure => stopped,
+    enable => false
+  }
+
 }
