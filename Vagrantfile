@@ -3,8 +3,7 @@ require 'yaml'
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-aws = YAML.load_file('aws.yml')
-puts aws.inspect
+aws_config = YAML.load_file('aws.yml')["aws"]
 
 Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
@@ -12,26 +11,32 @@ Vagrant.configure("2") do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-#  config.vm.box = "centos-6.4-base"
+  #  config.vm.box = "centos-6.4-base"
 
   #####################################################3
-  config.vm.box = "dummy"
+  config.vm.box = "base"
   config.vm.provider :aws do |aws, override|
-    aws.instance_type     = "t1.micro"
-    aws.access_key_id     = "xxxxxxxxxxxxxxxxxxxx"
-    aws.secret_access_key = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    #aws.user_data         = "#!/bin/sh\nsed -i -e 's/^\(Defaults.*requiretty\)/#\1/' /etc/sudoers\n"
-    aws.user_data         = "#!/bin/sh\nsed -i -e 's/^\(Defaults.*requiretty\)/#\1/' /etc/sudoers; echo 'got user data' > /tmp/user_data.log\n"
-    aws.keypair_name      = "keypair1"
-    aws.security_groups   = [ "webserver" ]
+    # perhaps eventually automate the config
+    # aws_config['aws'].each_key do |k, v|
+    #  puts k
+    #  puts v
+    # end
+    # puts aws.inspect
+
+    aws.instance_type     = aws_config["instance_type"]
+    aws.access_key_id     = aws_config["access_key_id"]
+    aws.secret_access_key = aws_config["secret_access_key"]
+    aws.keypair_name      = aws_config["keypair_name"]
+    aws.security_groups   = aws_config["security_groups"]
+    aws.user_data         = "#!/bin/bash\necho 'Defaults:ec2-user !requiretty' > /etc/sudoers.d/999-vagrant-cloud-init-requiretty && chmod 440 /etc/sudoers.d/999-vagrant-cloud-init-requiretty\nyum install -y puppet\n"
 
     # CentOS 6 with updates, x86_64:
     # https://aws.amazon.com/marketplace/pp/B00A6KUVBW
     # aws.ami = "ami-86e15bef" 
-    aws.ami = "ami-cdaac8a4"
+    aws.ami = aws_config["ami"]
 
     override.ssh.username         = "root"
-    override.ssh.private_key_path = "keypair1.pem"
+    override.ssh.private_key_path = "nemactestkey.pem"
   end
   #####################################################3
 
