@@ -1,0 +1,7 @@
+aws:
+  instance_type     : 't1.micro'
+  access_key_id     : 'YOUR ACCESS_KEY_ID'
+  secret_access_key : 'YOUR SECRET ACCESS KEY'
+  keypair_name      : 'YOUR KEYPAIR PEM FILE'
+  security_groups   : [ 'YOUR SECURITY GROUPS' ]
+  ami               : 'THE AMI'
