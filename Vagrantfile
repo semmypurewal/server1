@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     aws.ami = aws_config["ami"]
 
     override.ssh.username         = "root"
-    override.ssh.private_key_path = "nemactestkey.pem"
+    override.ssh.private_key_path = aws_config["keypair_name"] + ".pem"
   end
   #####################################################3
 
