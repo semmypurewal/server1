@@ -3,11 +3,9 @@ require 'yaml'
 aws_config = YAML.load_file('aws.yml')["aws"]
 
 Vagrant.configure("2") do |config|
-  # Every Vagrant virtual environment requires a box to build off of.
-  #  config.vm.box = "centos-6.4-base"
+  config.vm.box = "base"
 
   #####################################################3
-  config.vm.box = "base"
   config.vm.provider :aws do |aws, override|
     # perhaps eventually automate the config
     # aws_config['aws'].each_key do |k, v|
@@ -27,6 +25,18 @@ Vagrant.configure("2") do |config|
     override.ssh.private_key_path = aws_config["keypair_name"] + ".pem"
   end
   #####################################################3
+
+
+  # should probably go in the virtualbox-specific config
+  config.vm.network :private_network, ip: "192.168.33.20"
+  config.vm.network :forwarded_port, guest:80, host:8080
+
+  config.vm.provider :virtualbox do |vb|
+    # vb.network :forwarded_port, guest: 80, host: 8080
+  end                
+
+
+
 
   config.vm.synced_folder "./puppet", "/etc/puppet/files"
 
