@@ -5,7 +5,7 @@ aws_config = YAML.load_file('aws.yml')["aws"]
 Vagrant.configure("2") do |config|
   config.vm.box = "base"
 
-  #####################################################3
+  #####################################################
   config.vm.provider :aws do |aws, override|
     # perhaps eventually automate the config
     # aws_config['aws'].each_key do |k, v|
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
     override.ssh.username         = "root"
     override.ssh.private_key_path = aws_config["keypair_name"] + ".pem"
   end
-  #####################################################3
+  #####################################################
 
 
   # should probably go in the virtualbox-specific config
@@ -35,24 +35,14 @@ Vagrant.configure("2") do |config|
     # vb.network :forwarded_port, guest: 80, host: 8080
   end                
 
-
-
-
   config.vm.synced_folder "./puppet", "/etc/puppet/files"
 
-  config.vm.provision :shell,
-   :inline => 'rpm -Uvh http://yum.puppetlabs.com/el/6/products/i386/puppetlabs-release-6-7.noarch.rpm ; echo done'
-
-  config.vm.provision :shell,
-   :inline => 'yum -y install puppet'
-
-  config.vm.provision :shell,
-     :inline => 'puppet module install puppetlabs/vcsrepo ; echo done'
+  config.vm.provision :shell, :path => "install_puppet.sh"
 
   config.vm.provision :puppet,
     :options => ["--fileserverconfig=/vagrant/puppet/fileserver.conf"] do
-      |puppet|
-    puppet.module_path    = "puppet/modules"
+     |puppet|
+    puppet.module_path    = "puppet/modules"                           
     puppet.manifests_path = "puppet"
     puppet.manifest_file  = "site.pp"
   end
