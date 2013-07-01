@@ -1,4 +1,3 @@
-#                  www.billy.org   puppet:///files/www.billy.org.conf
 define line($file, $line, $ensure = 'present') {
     case $ensure {
         default : { err ( "unknown ensure value ${ensure}" ) }
@@ -15,8 +14,7 @@ define line($file, $line, $ensure = 'present') {
     }
 }
 
-class apache-vhost($vhost_name,    $vhost_source) {
-
+define apache-vhost($vhost_name,    $vhost_source) {
   line { "/etc/hosts-${vhost_name}" :
     file => '/etc/hosts',
     line => "127.0.0.1    ${vhost_name}"
@@ -26,15 +24,10 @@ class apache-vhost($vhost_name,    $vhost_source) {
     ensure => directory
   }
 
-#  file { "/var/${vhost_name}/html" :
-#    require => File["/var/${vhost_name}"],
-#    ensure => directory
-#  }
-
   file { "/etc/httpd/conf.d/${vhost_name}.conf" :
     require => [ Package['httpd'], Line["/etc/hosts-${vhost_name}"] ],
     ensure  => file,
     source  => $vhost_source
+    #    content => template("apache-vhost/vhost.conf.erb"),
   }
-
 }

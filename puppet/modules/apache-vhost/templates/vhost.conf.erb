@@ -1,0 +1,6 @@
+<VirtualHost *:80>
+    DocumentRoot /var/<%= @vhost_name %>/html
+    ServerName <%= @vhost_name %>
+    ErrorLog logs/<%= @vhost_name %>-error_log
+    CustomLog logs/<%= @vhost_name %>-access_log common
+</VirtualHost>
