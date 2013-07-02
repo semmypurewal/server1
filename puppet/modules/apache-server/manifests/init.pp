@@ -19,5 +19,4 @@ class apache-server {
     ensure => stopped,
     enable => false
   }
-
 }

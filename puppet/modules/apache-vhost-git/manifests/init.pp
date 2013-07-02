@@ -1,17 +1,17 @@
-define apache-vhost-git($vhost_name, $vhost_source, $git_source, $vhost_path) {
+define apache-vhost-git($vhost_name, $git_source) {
   include git                          
-
-  apache-vhost { $vhost_name :
-    vhost_name   => $vhost_name,
-    vhost_source => $vhost_source
-  }
 
   vcsrepo { $vhost_name:
     require => Package['git'],
-    path => $vhost_path,
+    path => "/var/${vhost_name}",
     ensure   => present,
     provider => git,
     source   => $git_source
+  }
+  ->
+  apache-vhost { $vhost_name :
+    require => Vcsrepo[$vhost_name],
+    vhost_name   => $vhost_name,
   }
 }
 
