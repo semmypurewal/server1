@@ -19,8 +19,8 @@ apache-vhost-git { "www.billy.org" :
 }
 
 # apache-vhost-git { "dashboard.nemac.org" :
-#   vhost_name      => "dashboard.nemac.org",
-#   git_source      => "https://github.com/embeepea/dashboard.nemac.org",
+#  vhost_name      => "dashboard.nemac.org",
+#  git_source      => "https://github.com/embeepea/dashboard.nemac.org",
 # }
 
 ## Here's an example of a way to import and use data variables (such as passwords)
